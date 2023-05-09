@@ -1,7 +1,6 @@
 plugins {
     application
     id("java")
-    id("org.graalvm.buildtools.native") version "0.9.21"
 }
 
 group = "net.slonka.greencode"
@@ -24,13 +23,6 @@ dependencies {
 
 application {
     mainClass.set("net.slonka.greencode.Main")
-}
-
-graalvmNative {
-    binaries.all {
-        resources.autodetect()
-    }
-    toolchainDetection.set(false)
 }
 
 tasks.test {
