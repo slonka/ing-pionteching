@@ -6,20 +6,42 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
+import io.netty.util.ReferenceCountUtil;
 import net.slonka.greencode.atmservice.domain.Order;
 import net.slonka.greencode.atmservice.domain.Task;
 import net.slonka.greencode.atmservice.solver.ConvoyOrderSystem;
 
 import java.util.List;
 
-public class ATMsServiceHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+public class ATMsServiceHandler extends ChannelInboundHandlerAdapter {
     private final DslJson<Object> dslJson = new DslJson<>();
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        // fast path
+        if (msg == LastHttpContent.EMPTY_LAST_CONTENT) {
+            return;
+        }
+        channelReadSlowPath(ctx, msg);
+    }
+
+    private void channelReadSlowPath(ChannelHandlerContext ctx, Object msg) throws Exception {
+        // slow path
+        if (msg instanceof FullHttpRequest) {
+            try {
+                FullHttpRequest request = (FullHttpRequest) msg;
+                process(ctx, request);
+            } finally {
+                ReferenceCountUtil.release(msg);
+            }
+        }
+    }
+
+
+    protected void process(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
         if ("/atms/calculateOrder".equalsIgnoreCase(request.uri()) && request.method() == HttpMethod.POST) {
             byte[] requestBody = new byte[request.content().readableBytes()];
             request.content().readBytes(requestBody);

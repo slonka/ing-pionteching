@@ -17,8 +17,8 @@ dependencies {
     implementation("io.netty:netty-transport-native-epoll:4.1.92.Final")
     implementation("io.netty:netty-transport-native-kqueue:4.1.92.Final")
     implementation("io.netty.incubator:netty-incubator-transport-native-io_uring:0.0.21.Final")
-    implementation("com.dslplatform:dsl-json:1.10.0")
     implementation("org.javassist:javassist:3.29.2-GA")
+    implementation("com.dslplatform:dsl-json-java8:1.10.0")
 }
 
 application {
