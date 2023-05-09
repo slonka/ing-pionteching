@@ -17,7 +17,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("org.example.Main")
+    mainClass.set("net.slonka.greencode.Main")
 }
 
 graalvmNative {
