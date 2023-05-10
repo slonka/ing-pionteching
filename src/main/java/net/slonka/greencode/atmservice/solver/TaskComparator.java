@@ -1,19 +1,19 @@
 package net.slonka.greencode.atmservice.solver;
 
 
-import net.slonka.greencode.atmservice.domain.Order;
+import net.slonka.greencode.atmservice.domain.Task;
 
 import java.util.Comparator;
 
-class OrderComparator implements Comparator<Order> {
+class TaskComparator implements Comparator<Task> {
     @Override
-    public int compare(Order o1, Order o2) {
+    public int compare(Task o1, Task o2) {
         if (o1.getRegion() != o2.getRegion()) {
             return Integer.compare(o1.getRegion(), o2.getRegion());
         }
 
-        if (o1.getOrderType() != o2.getOrderType()) {
-            return o1.getOrderType().ordinal() - o2.getOrderType().ordinal();
+        if (o1.getRequestType() != o2.getRequestType()) {
+            return o1.getRequestType().ordinal() - o2.getRequestType().ordinal();
         }
 
         return Integer.compare(o1.getAtmId(), o2.getAtmId());

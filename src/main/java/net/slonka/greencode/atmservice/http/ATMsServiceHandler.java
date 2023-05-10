@@ -9,7 +9,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
 import io.netty.util.ReferenceCountUtil;
-import net.slonka.greencode.atmservice.domain.Order;
+import net.slonka.greencode.atmservice.domain.ATM;
 import net.slonka.greencode.atmservice.domain.Task;
 import net.slonka.greencode.atmservice.solver.ConvoyOrderSystem;
 
@@ -43,10 +43,10 @@ public class ATMsServiceHandler extends ChannelInboundHandlerAdapter {
             request.content().readBytes(requestBody);
 
             // Deserialize the request body to a list of tasks
-            var tasks = JSON.parseArray(new String(requestBody), Task.class);
+            var tasks = JSON.parseObject(new String(requestBody), Task[].class);
 
             // Calculate the order
-            List<Order> orders = ConvoyOrderSystem.calculateOrder(tasks);
+            List<ATM> orders = ConvoyOrderSystem.calculateOrder(List.of(tasks));
 
             // Serialize the order to JSON
             var ordersString = JSON.toJSONString(orders);

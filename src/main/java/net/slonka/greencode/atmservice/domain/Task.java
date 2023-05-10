@@ -3,11 +3,11 @@ package net.slonka.greencode.atmservice.domain;
 import java.util.Objects;
 
 public class Task {
-    private int region;
-    private String requestType;
-    private int atmId;
+    public int region;
+    public RequestType requestType;
+    public int atmId;
 
-    public Task(int region, String requestType, int atmId) {
+    public Task(int region, RequestType requestType, int atmId) {
         this.region = region;
         this.requestType = requestType;
         this.atmId = atmId;
@@ -21,14 +21,6 @@ public class Task {
         this.region = region;
     }
 
-    public String getRequestType() {
-        return requestType;
-    }
-
-    public void setRequestType(String requestType) {
-        this.requestType = requestType;
-    }
-
     public int getAtmId() {
         return atmId;
     }
@@ -37,12 +29,20 @@ public class Task {
         this.atmId = atmId;
     }
 
+    public RequestType getRequestType() {
+        return requestType;
+    }
+
+    public void setRequestType(RequestType requestType) {
+        this.requestType = requestType;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return region == task.region && atmId == task.atmId && Objects.equals(requestType, task.requestType);
+        return region == task.region && atmId == task.atmId && requestType == task.requestType;
     }
 
     @Override

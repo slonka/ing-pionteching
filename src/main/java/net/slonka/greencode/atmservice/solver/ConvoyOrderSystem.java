@@ -1,24 +1,28 @@
 package net.slonka.greencode.atmservice.solver;
 
-import net.slonka.greencode.atmservice.domain.Order;
-import net.slonka.greencode.atmservice.domain.OrderType;
-import net.slonka.greencode.atmservice.domain.OrderTypeConverter;
+import net.slonka.greencode.atmservice.domain.ATM;
 import net.slonka.greencode.atmservice.domain.Task;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ConvoyOrderSystem {
-    public static List<Order> calculateOrder(List<Task> tasks) {
-        List<Order> orders = new ArrayList<>();
+    private static Comparator<Task> comparator = new TaskComparator();
 
-        for (Task task : tasks) {
-            OrderType type = OrderTypeConverter.convert(task.getRequestType());
-            orders.add(new Order(task.getRegion(), task.getAtmId(), type));
+    public static List<ATM> calculateOrder(List<Task> tasks) {
+        var sorted = new ArrayList<>(tasks);
+        sorted.sort(comparator);
+        var seenTasks = new HashSet<>(tasks.size());
+        var finalResult = new ArrayList<ATM>(tasks.size());
+
+        for(var task : sorted) {
+            var atm = new ATM(task.getRegion(), task.getAtmId());
+            if (!seenTasks.contains(atm)) {
+                seenTasks.add(atm);
+                finalResult.add(atm);
+            }
         }
 
-        orders.sort(new OrderComparator());
-        return orders;
+        return finalResult;
     }
 }
 
