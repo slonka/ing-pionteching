@@ -1,7 +1,6 @@
 package net.slonka.greencode.atmservice.http;
 
-import com.dslplatform.json.DslJson;
-import com.dslplatform.json.JsonWriter;
+import com.alibaba.fastjson.JSON;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -17,8 +16,6 @@ import net.slonka.greencode.atmservice.solver.ConvoyOrderSystem;
 import java.util.List;
 
 public class ATMsServiceHandler extends ChannelInboundHandlerAdapter {
-    private final DslJson<Object> dslJson = new DslJson<>();
-
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         // fast path
@@ -47,17 +44,17 @@ public class ATMsServiceHandler extends ChannelInboundHandlerAdapter {
             request.content().readBytes(requestBody);
 
             // Deserialize the request body to a list of tasks
-            List<Task> tasks = dslJson.deserializeList(Task.class, requestBody, requestBody.length);
+            
+            var tasks = JSON.parseArray(new String(requestBody), Task.class);
 
             // Calculate the order
-            List<Order> order = ConvoyOrderSystem.calculateOrder(tasks);
+            List<Order> orders = ConvoyOrderSystem.calculateOrder(tasks);
 
             // Serialize the order to JSON
-            JsonWriter writer = dslJson.newWriter();
-            dslJson.serialize(writer, order);
+            var ordersString = JSON.toJSONString(orders);
 
             // Create the response
-            ByteBuf content = Unpooled.copiedBuffer(writer.toString(), CharsetUtil.UTF_8);
+            ByteBuf content = Unpooled.copiedBuffer(ordersString, CharsetUtil.UTF_8);
             FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, content);
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json; charset=UTF-8");
             response.headers().set(HttpHeaderNames.CONTENT_LENGTH, content.readableBytes());

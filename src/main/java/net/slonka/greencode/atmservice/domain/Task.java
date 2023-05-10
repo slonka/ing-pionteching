@@ -1,10 +1,7 @@
 package net.slonka.greencode.atmservice.domain;
 
-import com.dslplatform.json.CompiledJson;
-
 import java.util.Objects;
 
-@CompiledJson
 public class Task {
     private int region;
     private String requestType;
