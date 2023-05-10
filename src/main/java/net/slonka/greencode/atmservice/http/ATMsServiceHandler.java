@@ -37,14 +37,12 @@ public class ATMsServiceHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-
     protected void process(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
         if ("/atms/calculateOrder".equalsIgnoreCase(request.uri()) && request.method() == HttpMethod.POST) {
             byte[] requestBody = new byte[request.content().readableBytes()];
             request.content().readBytes(requestBody);
 
             // Deserialize the request body to a list of tasks
-            
             var tasks = JSON.parseArray(new String(requestBody), Task.class);
 
             // Calculate the order
@@ -68,11 +66,9 @@ public class ATMsServiceHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         cause.printStackTrace();
         ctx.close();
     }
 }
-
