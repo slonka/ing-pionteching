@@ -1,10 +1,8 @@
 package net.slonka.greencode;
 
-import java.util.concurrent.ScheduledExecutorService;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.*;
-import net.slonka.greencode.atmservice.http.ATMsServiceHandler;
 
 public class ServerInitializer extends ChannelInitializer<SocketChannel> {
 
@@ -25,6 +23,6 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
                 })
                 .addLast("decoder", new HttpRequestDecoder())
                 .addLast("aggregator", new HttpObjectAggregator(1048576))
-                .addLast("handler", new ATMsServiceHandler());
+                .addLast("httpHandler", new ServiceHandler());
     }
 }

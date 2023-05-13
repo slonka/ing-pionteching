@@ -1,6 +1,7 @@
-package net.slonka.greencode.atmservice.http;
+package net.slonka.greencode;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -12,10 +13,14 @@ import io.netty.util.ReferenceCountUtil;
 import net.slonka.greencode.atmservice.domain.ATM;
 import net.slonka.greencode.atmservice.domain.Task;
 import net.slonka.greencode.atmservice.solver.ConvoyOrderSystem;
+import net.slonka.greencode.transactions.domain.Account;
+import net.slonka.greencode.transactions.domain.Transaction;
+import net.slonka.greencode.transactions.solver.TransactionSolver;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-public class ATMsServiceHandler extends ChannelInboundHandlerAdapter {
+public class ServiceHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         // fast path
@@ -38,12 +43,12 @@ public class ATMsServiceHandler extends ChannelInboundHandlerAdapter {
     }
 
     protected void process(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
-        if ("/atms/calculateOrder".equalsIgnoreCase(request.uri()) && request.method() == HttpMethod.POST) {
-            byte[] requestBody = new byte[request.content().readableBytes()];
-            request.content().readBytes(requestBody);
+        String uri = request.uri();
+        HttpMethod method = request.method();
 
+        if ("/atms/calculateOrder".equalsIgnoreCase(uri) && method == HttpMethod.POST) {
             // Deserialize the request body to a list of tasks
-            var tasks = JSON.parseObject(new String(requestBody), Task[].class);
+            var tasks = JSON.parseObject(request.content().toString(StandardCharsets.UTF_8), Task[].class);
 
             // Calculate the order
             List<ATM> orders = ConvoyOrderSystem.calculateOrder(tasks);
@@ -59,8 +64,17 @@ public class ATMsServiceHandler extends ChannelInboundHandlerAdapter {
 
             // Write the response and close the connection
             ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+        } else if ("/transactions/report".equals(uri) && method == HttpMethod.POST) {
+            var transactions = JSON.parseObject(request.content().toString(StandardCharsets.UTF_8), Transaction[].class);
+            List<Account> report = TransactionSolver.processTransactions(transactions);
+
+            String responseJson = JSON.toJSONString(report);
+            FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK,
+                    Unpooled.wrappedBuffer(responseJson.getBytes(StandardCharsets.UTF_8)));
+
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json; charset=UTF-8");
+            ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
         } else {
-            // Return a 404 Not Found response
             FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.NOT_FOUND);
             ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
         }
