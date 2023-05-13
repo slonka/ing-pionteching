@@ -46,7 +46,7 @@ public class ATMsServiceHandler extends ChannelInboundHandlerAdapter {
             var tasks = JSON.parseObject(new String(requestBody), Task[].class);
 
             // Calculate the order
-            List<ATM> orders = ConvoyOrderSystem.calculateOrder(List.of(tasks));
+            List<ATM> orders = ConvoyOrderSystem.calculateOrder(tasks);
 
             // Serialize the order to JSON
             var ordersString = JSON.toJSONString(orders);
@@ -68,7 +68,9 @@ public class ATMsServiceHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        FullHttpResponse errorResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.INTERNAL_SERVER_ERROR);
         cause.printStackTrace();
+        ctx.writeAndFlush(errorResponse).addListener(ChannelFutureListener.CLOSE);
         ctx.close();
     }
 }
