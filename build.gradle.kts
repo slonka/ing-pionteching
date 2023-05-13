@@ -22,7 +22,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("net.slonka.greencode.Main")
+    mainClass.set("net.slonka.greencode.WebServer")
 }
 
 tasks.test {
