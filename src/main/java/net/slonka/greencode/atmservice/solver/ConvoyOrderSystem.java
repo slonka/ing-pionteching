@@ -9,7 +9,7 @@ public class ConvoyOrderSystem {
     private static Comparator<Task> comparator = new TaskComparator();
 
     public static List<ATM> calculateOrder(Task[] tasks) {
-        Arrays.sort(tasks);
+        Arrays.sort(tasks, new TaskComparator());
         var seenTasks = new HashSet<>(tasks.length);
         var finalResult = new ArrayList<ATM>(tasks.length);
 
