@@ -79,6 +79,25 @@ public class WebServerTest {
         assertArrayEquals(expectedResponse, actualResponse);
     }
 
+    @Test
+    public void testAtmService2() throws IOException, InterruptedException {
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpRequest httpRequest = HttpRequest.newBuilder()
+                .uri(URI.create(SERVER_URL + "/atms/calculateOrder"))
+                .header("Accept", "application/json")
+                .header("Content-type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(readFileFromResources("atmservice/example_2_request.json")))
+                .build();
+
+        HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+        var body = response.body();
+        ATM[] actualResponse = JSON.parseObject(body, ATM[].class);
+        ATM[] expectedResponse = JSON.parseObject(readFileFromResources("atmservice/example_2_response.json"), ATM[].class);
+
+        assertEquals(200, response.statusCode());
+        assertArrayEquals(expectedResponse, actualResponse);
+    }
+
     @AfterAll
     public static void tearDown() {
         webServer.stop();
