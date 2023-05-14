@@ -6,29 +6,38 @@ import net.slonka.greencode.onlinegame.domain.Group;
 import java.util.*;
 
 public class OnlineGameSolver {
-    public static List<Group> calculateOrder(int groupCount, List<Clan> clans) {
+    public static List<Group> calculateOrder(int groupCount, Clan[] clans) {
         // Sort the list of clans based on the rules
-        clans.sort((a, b) -> {
+        Arrays.sort(clans, ((a, b) -> {
             if (a.getPoints() == b.getPoints()) {
                 return Integer.compare(a.getNumberOfPlayers(), b.getNumberOfPlayers());
             }
             return Integer.compare(b.getPoints(), a.getPoints());
-        });
+        }));
 
         List<Group> groups = new ArrayList<>();
-        Queue<Clan> remainingClans = new LinkedList<>(clans);
+        int clansAddedCount = 0;
+        int allClans = clans.length;
+        var clansAdded = new boolean[allClans];
+        var initialIndex = 0;
 
-        while (!remainingClans.isEmpty()) {
+        while (clansAddedCount != allClans) {
             Group group = new Group();
             int groupSize = 0;
 
-            Iterator<Clan> iterator = remainingClans.iterator();
-            while (iterator.hasNext()) {
-                Clan clan = iterator.next();
+            for (int i = initialIndex; i < allClans; i++) {
+                Clan clan = clans[i];
+                if (clansAdded[i]) {
+                    if (i == initialIndex) {
+                        initialIndex++;
+                    }
+                    continue;
+                }
                 if (groupSize + clan.getNumberOfPlayers() <= groupCount) {
                     groupSize += clan.getNumberOfPlayers();
                     group.add(clan);
-                    iterator.remove();
+                    clansAdded[i] = true;
+                    clansAddedCount++;
                 }
             }
 

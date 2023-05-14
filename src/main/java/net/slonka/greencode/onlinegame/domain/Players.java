@@ -5,7 +5,7 @@ import java.util.List;
 // Players.java
 public class Players {
     private int groupCount;
-    private List<Clan> clans;
+    private Clan[] clans;
 
     public int getGroupCount() {
         return groupCount;
@@ -15,11 +15,11 @@ public class Players {
         this.groupCount = groupCount;
     }
 
-    public List<Clan> getClans() {
+    public Clan[] getClans() {
         return clans;
     }
 
-    public void setClans(List<Clan> clans) {
+    public void setClans(Clan[] clans) {
         this.clans = clans;
     }
 }
