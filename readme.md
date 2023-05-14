@@ -8,4 +8,4 @@ TODO: screenshot z raportem skanowania, powyższe chyba tylko pokazuje czy workf
 
 ## Licencje używanych bibliotek
 
-Szczegółowy raport licencji znajduje się w pliku [licences/index.html](licences/index.html).
+Szczegółowy raport licencji znajduje się w pliku [licences/index.html](licences/index.html) ([podgląd online](https://htmlpreview.github.io/?https://raw.githubusercontent.com/slonka/ing-pionteching/main/licences/index.html)).
