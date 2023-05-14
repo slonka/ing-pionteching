@@ -6,7 +6,8 @@ import io.netty.handler.codec.http.*;
 
 public class ServerInitializer extends ChannelInitializer<SocketChannel> {
 
-    private final static int MAX_CONTENT_LENGTH = 10 * 1024 * 1024; // 10MB
+    // 100k transactions are 17MBs in size
+    private final static int MAX_CONTENT_LENGTH = 50 * 1024 * 1024; // 50MB
 
     @Override
     public void initChannel(SocketChannel ch) throws Exception {

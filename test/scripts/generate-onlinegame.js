@@ -21,7 +21,7 @@ function generateTestCase() {
         clans
     };
 
-    return JSON.stringify(testCase);
+    return JSON.stringify(testCase, null, 4);
 }
 
 console.log(generateTestCase());

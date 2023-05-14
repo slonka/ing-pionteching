@@ -1,0 +1,20 @@
+config:
+  target: "http://localhost:8080"
+  plugins:
+    "json-include": { }
+  environments:
+    local-dev:
+      target: "http://localhost:8080"
+    prod:
+      target: "https://ing-pionteching-slonka.koyeb.app"
+  phases:
+    - duration: 60
+      arrivalRate: 10
+      name: Sustained load
+scenarios:
+  - flow:
+      - post:
+          url: "/transactions/report"
+          headers:
+            Content-Type: "application/json"
+          json: "!include(./fixtures/transactions/100k-transactions.json)"
