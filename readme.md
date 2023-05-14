@@ -4,7 +4,7 @@
 
 [![CodeQL](https://github.com/slonka/ing-pionteching/actions/workflows/codeql.yml/badge.svg)](https://github.com/slonka/ing-pionteching/actions/workflows/codeql.yml)
 
-TODO: screenshot z raportem skanowania, powyższe chyba tylko pokazuje czy workflow zakonczyl sie sukcesem
+![code scan screenshot](img/code-scan.jpg "Code scan screenshot")
 
 ## Licencje używanych bibliotek
 
