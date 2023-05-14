@@ -1,4 +1,4 @@
-# Zielona Teslaza zielony kod
+# Zielona Tesla za zielony kod
 
 ## Raport statycznej analizy bezpieczeństwa kodu SAST
 
