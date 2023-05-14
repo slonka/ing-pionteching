@@ -6,8 +6,7 @@ import io.netty.handler.codec.http.*;
 
 public class ServerInitializer extends ChannelInitializer<SocketChannel> {
 
-    public ServerInitializer() {
-    }
+    private final static int MAX_CONTENT_LENGTH = 10 * 1024 * 1024; // 10MB
 
     @Override
     public void initChannel(SocketChannel ch) throws Exception {
@@ -22,7 +21,7 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
                     }
                 })
                 .addLast("decoder", new HttpRequestDecoder())
-                .addLast("aggregator", new HttpObjectAggregator(1048576))
+                .addLast("aggregator", new HttpObjectAggregator(MAX_CONTENT_LENGTH))
                 .addLast("httpHandler", new ServiceHandler());
     }
 }
