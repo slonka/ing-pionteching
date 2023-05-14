@@ -1,0 +1,44 @@
+config:
+  target: "http://localhost:8080"
+  plugins:
+    "json-include": { }
+  environments:
+    local-dev:
+      target: "http://localhost:8080"
+    prod:
+      target: "https://ing-pionteching-slonka.koyeb.app"
+  phases:
+    - duration: 60
+      arrivalRate: 10
+      name: Sustained load
+scenarios:
+  - flow:
+      - post:
+          url: "/atms/calculateOrder"
+          headers:
+            Content-Type: "application/json"
+          json:
+            - region: 4
+              requestType: STANDARD
+              atmId: 1
+            - region: 1
+              requestType: STANDARD
+              atmId: 1
+            - region: 2
+              requestType: STANDARD
+              atmId: 1
+            - region: 3
+              requestType: PRIORITY
+              atmId: 2
+            - region: 3
+              requestType: STANDARD
+              atmId: 1
+            - region: 2
+              requestType: SIGNAL_LOW
+              atmId: 1
+            - region: 5
+              requestType: STANDARD
+              atmId: 2
+            - region: 5
+              requestType: FAILURE_RESTART
+              atmId: 1
