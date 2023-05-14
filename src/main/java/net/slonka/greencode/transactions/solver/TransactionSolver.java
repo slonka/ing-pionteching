@@ -14,13 +14,13 @@ public class TransactionSolver {
             Account debitAccount = accounts.getOrDefault(transaction.debitAccount, new Account());
             debitAccount.account = transaction.debitAccount;
             debitAccount.debitCount++;
-            debitAccount.balance -= transaction.amount;
+            debitAccount.balance = debitAccount.balance.subtract(transaction.amount);
             accounts.put(transaction.debitAccount, debitAccount);
 
             Account creditAccount = accounts.getOrDefault(transaction.creditAccount, new Account());
             creditAccount.account = transaction.creditAccount;
             creditAccount.creditCount++;
-            creditAccount.balance += transaction.amount;
+            creditAccount.balance = creditAccount.balance.add(transaction.amount);
             accounts.put(transaction.creditAccount, creditAccount);
         }
 

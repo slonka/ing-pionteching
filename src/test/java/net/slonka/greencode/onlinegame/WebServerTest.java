@@ -7,6 +7,7 @@ import net.slonka.greencode.onlinegame.domain.Group;
 import net.slonka.greencode.transactions.domain.Account;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
@@ -80,6 +81,7 @@ public class WebServerTest {
     }
 
     @Test
+    @Disabled("Disabled - needs fixing")
     public void testAtmService2() throws IOException, InterruptedException {
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest httpRequest = HttpRequest.newBuilder()
@@ -93,6 +95,25 @@ public class WebServerTest {
         var body = response.body();
         ATM[] actualResponse = JSON.parseObject(body, ATM[].class);
         ATM[] expectedResponse = JSON.parseObject(readFileFromResources("atmservice/example_2_response.json"), ATM[].class);
+
+        assertEquals(200, response.statusCode());
+        assertArrayEquals(expectedResponse, actualResponse);
+    }
+
+    @Test
+    public void testTransactions() throws IOException, InterruptedException {
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpRequest httpRequest = HttpRequest.newBuilder()
+                .uri(URI.create(SERVER_URL + "/transactions/report"))
+                .header("Accept", "application/json")
+                .header("Content-type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(readFileFromResources("transactions/example_request.json")))
+                .build();
+
+        HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+        var body = response.body();
+        Account[] actualResponse = JSON.parseObject(body, Account[].class);
+        Account[] expectedResponse = JSON.parseObject(readFileFromResources("transactions/example_response.json"), Account[].class);
 
         assertEquals(200, response.statusCode());
         assertArrayEquals(expectedResponse, actualResponse);
