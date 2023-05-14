@@ -3,6 +3,7 @@ package net.slonka.greencode.onlinegame;
 import com.alibaba.fastjson2.JSON;
 import net.slonka.greencode.WebServer;
 import net.slonka.greencode.onlinegame.domain.Group;
+import net.slonka.greencode.transactions.domain.Account;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -40,24 +41,42 @@ public class WebServerTest {
     }
 
     @Test
-    public void testPostRequestWithJson() throws IOException, InterruptedException {
+    public void testOnlineGame() throws IOException, InterruptedException {
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest httpRequest = HttpRequest.newBuilder()
-                .uri(URI.create(SERVER_URL + "/onlinegame/calculate")) // Replace with your endpoint
+                .uri(URI.create(SERVER_URL + "/onlinegame/calculate"))
                 .header("Accept", "application/json")
                 .header("Content-type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(readFileFromResources("onlinegame/payload-1.json")))
+                .POST(HttpRequest.BodyPublishers.ofString(readFileFromResources("onlinegame/example_request.json")))
                 .build();
 
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         var body = response.body();
         Group[] actualResponse = JSON.parseObject(body, Group[].class);
-        Group[] expectedResponse = JSON.parseObject(readFileFromResources("onlinegame/response-1.json"), Group[].class);
+        Group[] expectedResponse = JSON.parseObject(readFileFromResources("onlinegame/example_response.json"), Group[].class);
 
         assertEquals(200, response.statusCode());
-        assertArrayEquals(expectedResponse, actualResponse); // Update the assertion to use assertArrayEquals()
+        assertArrayEquals(expectedResponse, actualResponse);
     }
 
+    @Test
+    public void testAtmService1() throws IOException, InterruptedException {
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpRequest httpRequest = HttpRequest.newBuilder()
+                .uri(URI.create(SERVER_URL + "/atms/calculateOrder"))
+                .header("Accept", "application/json")
+                .header("Content-type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(readFileFromResources("atmservice/example_1_request.json")))
+                .build();
+
+        HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+        var body = response.body();
+        Account[] actualResponse = JSON.parseObject(body, Account[].class);
+        Account[] expectedResponse = JSON.parseObject(readFileFromResources("atmservice/example_1_response.json"), Account[].class);
+
+        assertEquals(200, response.statusCode());
+        assertArrayEquals(expectedResponse, actualResponse);
+    }
 
     @AfterAll
     public static void tearDown() {
