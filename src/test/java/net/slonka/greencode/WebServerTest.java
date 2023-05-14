@@ -1,7 +1,6 @@
-package net.slonka.greencode.onlinegame;
+package net.slonka.greencode;
 
 import com.alibaba.fastjson2.JSON;
-import net.slonka.greencode.WebServer;
 import net.slonka.greencode.atmservice.domain.ATM;
 import net.slonka.greencode.onlinegame.domain.Group;
 import net.slonka.greencode.transactions.domain.Account;

@@ -12,6 +12,12 @@ public class Transaction {
         this.amount = new BigDecimal("0");
     }
 
+    public Transaction(String debitAccount, String creditAccount, BigDecimal amount) {
+        this.debitAccount = debitAccount;
+        this.creditAccount = creditAccount;
+        this.amount = amount;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
