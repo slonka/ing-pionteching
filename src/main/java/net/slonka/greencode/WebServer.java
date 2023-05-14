@@ -29,6 +29,7 @@ public class WebServer {
     }
 
     private final int port;
+    private EventLoopGroup loupGroup;
 
     public WebServer(int port) {
         this.port = port;
@@ -48,7 +49,16 @@ public class WebServer {
         }
     }
 
+    public void stop() {
+        try {
+            this.loupGroup.shutdownGracefully().sync();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private void doRun(EventLoopGroup loupGroup, Class<? extends ServerChannel> serverChannelClass, IoMultiplexer multiplexer) throws InterruptedException {
+        this.loupGroup = loupGroup;
         try {
             InetSocketAddress inet = new InetSocketAddress(port);
 
