@@ -35,6 +35,10 @@ tasks.jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
+tasks.withType<JavaExec> {
+    systemProperty("fastjson.parser.safeMode", "true")
+}
+
 tasks.test {
     useJUnitPlatform()
 }

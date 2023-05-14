@@ -1,6 +1,7 @@
 package net.slonka.greencode;
 import java.net.InetSocketAddress;
 
+import com.alibaba.fastjson.parser.ParserConfig;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
@@ -79,6 +80,7 @@ public class WebServer {
     }
 
     public static void main(String[] args) throws Exception {
+        ParserConfig.getGlobalInstance().setSafeMode(true);
         int port;
         if (args.length > 0) {
             port = Integer.parseInt(args[0]);
