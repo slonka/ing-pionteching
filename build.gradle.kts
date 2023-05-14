@@ -18,7 +18,7 @@ dependencies {
     implementation("io.netty:netty-transport-native-kqueue:4.1.92.Final")
     implementation("io.netty.incubator:netty-incubator-transport-native-io_uring:0.0.21.Final")
     implementation("org.javassist:javassist:3.29.2-GA")
-    implementation("com.alibaba:fastjson:2.0.28")
+    implementation("com.alibaba:fastjson:2.0.31")
 }
 
 application {
