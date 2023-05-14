@@ -13,7 +13,7 @@ repositories {
 
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.9.3"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
     implementation("io.netty:netty-codec-http:4.1.92.Final")
     implementation("io.netty:netty-transport-native-epoll:4.1.92.Final")
     implementation("io.netty:netty-transport-native-kqueue:4.1.92.Final")

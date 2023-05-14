@@ -19,4 +19,9 @@ public class Clan {
     public void setPoints(int points) {
         this.points = points;
     }
+
+    public Clan(int numberOfPlayers, int points) {
+        this.numberOfPlayers = numberOfPlayers;
+        this.points = points;
+    }
 }
