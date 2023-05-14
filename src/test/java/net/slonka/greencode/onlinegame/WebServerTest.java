@@ -2,6 +2,7 @@ package net.slonka.greencode.onlinegame;
 
 import com.alibaba.fastjson2.JSON;
 import net.slonka.greencode.WebServer;
+import net.slonka.greencode.atmservice.domain.ATM;
 import net.slonka.greencode.onlinegame.domain.Group;
 import net.slonka.greencode.transactions.domain.Account;
 import org.junit.jupiter.api.AfterAll;
@@ -71,8 +72,8 @@ public class WebServerTest {
 
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         var body = response.body();
-        Account[] actualResponse = JSON.parseObject(body, Account[].class);
-        Account[] expectedResponse = JSON.parseObject(readFileFromResources("atmservice/example_1_response.json"), Account[].class);
+        ATM[] actualResponse = JSON.parseObject(body, ATM[].class);
+        ATM[] expectedResponse = JSON.parseObject(readFileFromResources("atmservice/example_1_response.json"), ATM[].class);
 
         assertEquals(200, response.statusCode());
         assertArrayEquals(expectedResponse, actualResponse);
