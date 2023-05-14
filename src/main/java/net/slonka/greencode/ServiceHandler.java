@@ -2,6 +2,7 @@ package net.slonka.greencode;
 
 import com.alibaba.fastjson2.JSON;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -12,6 +13,9 @@ import io.netty.util.ReferenceCountUtil;
 import net.slonka.greencode.atmservice.domain.ATM;
 import net.slonka.greencode.atmservice.domain.Task;
 import net.slonka.greencode.atmservice.solver.ConvoyOrderSystem;
+import net.slonka.greencode.onlinegame.domain.Group;
+import net.slonka.greencode.onlinegame.domain.Players;
+import net.slonka.greencode.onlinegame.solver.OnlineGameSolver;
 import net.slonka.greencode.transactions.domain.Account;
 import net.slonka.greencode.transactions.domain.Transaction;
 import net.slonka.greencode.transactions.solver.TransactionSolver;
@@ -44,39 +48,32 @@ public class ServiceHandler extends ChannelInboundHandlerAdapter {
     protected void process(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
         String uri = request.uri();
         HttpMethod method = request.method();
+        FullHttpResponse response = null;
 
         if ("/atms/calculateOrder".equalsIgnoreCase(uri) && method == HttpMethod.POST) {
-            // Deserialize the request body to a list of tasks
             var tasks = JSON.parseObject(request.content().toString(StandardCharsets.UTF_8), Task[].class);
-
-            // Calculate the order
             List<ATM> orders = ConvoyOrderSystem.calculateOrder(tasks);
-
-            // Serialize the order to JSON
-            var ordersString = JSON.toJSONString(orders);
-
-            // Create the response
-            ByteBuf content = Unpooled.copiedBuffer(ordersString, CharsetUtil.UTF_8);
-            FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, content);
-            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json; charset=UTF-8");
-            response.headers().set(HttpHeaderNames.CONTENT_LENGTH, content.readableBytes());
-
-            // Write the response and close the connection
-            ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+            var responseJson = JSON.toJSONString(orders);
+            response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK,
+                    Unpooled.wrappedBuffer(responseJson.getBytes(StandardCharsets.UTF_8)));
         } else if ("/transactions/report".equals(uri) && method == HttpMethod.POST) {
             var transactions = JSON.parseObject(request.content().toString(StandardCharsets.UTF_8), Transaction[].class);
             List<Account> report = TransactionSolver.processTransactions(transactions);
-
             String responseJson = JSON.toJSONString(report);
-            FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK,
+            response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK,
                     Unpooled.wrappedBuffer(responseJson.getBytes(StandardCharsets.UTF_8)));
-
-            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json; charset=UTF-8");
-            ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+        } else if ("/onlinegame/calculate".equals(uri) && method == HttpMethod.POST) {
+            Players players = JSON.parseObject(new ByteBufInputStream(request.content()), Players.class);
+            List<Group> order = OnlineGameSolver.calculateOrder(players.getGroupCount(), players.getClans());
+            String responseJson = JSON.toJSONString(order);
+            response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK,
+                    Unpooled.wrappedBuffer(responseJson.getBytes(StandardCharsets.UTF_8)));
         } else {
-            FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.NOT_FOUND);
-            ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+            response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.NOT_FOUND);
         }
+
+        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json; charset=UTF-8");
+        ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
     }
 
     @Override
