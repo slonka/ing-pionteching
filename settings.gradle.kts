@@ -1,4 +1,4 @@
-rootProject.name = "ing-tesla"
+rootProject.name = "ing-pionteching"
 
 pluginManagement {
     repositories {
