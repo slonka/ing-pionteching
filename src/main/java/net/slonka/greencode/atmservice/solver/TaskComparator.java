@@ -16,6 +16,6 @@ class TaskComparator implements Comparator<Task> {
             return o1.getRequestType().ordinal() - o2.getRequestType().ordinal();
         }
 
-        return Integer.compare(o1.getAtmId(), o2.getAtmId());
+        return 0;
     }
 }

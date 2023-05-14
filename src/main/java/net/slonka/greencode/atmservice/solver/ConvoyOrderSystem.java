@@ -6,7 +6,7 @@ import net.slonka.greencode.atmservice.domain.Task;
 import java.util.*;
 
 public class ConvoyOrderSystem {
-    private static Comparator<Task> comparator = new TaskComparator();
+    private static final Comparator<Task> comparator = new TaskComparator();
 
     public static List<ATM> calculateOrder(Task[] tasks) {
         Arrays.sort(tasks, comparator);

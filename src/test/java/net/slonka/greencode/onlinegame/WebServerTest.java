@@ -7,7 +7,6 @@ import net.slonka.greencode.onlinegame.domain.Group;
 import net.slonka.greencode.transactions.domain.Account;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
@@ -81,7 +80,6 @@ public class WebServerTest {
     }
 
     @Test
-    @Disabled("Disabled - needs fixing")
     public void testAtmService2() throws IOException, InterruptedException {
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest httpRequest = HttpRequest.newBuilder()
