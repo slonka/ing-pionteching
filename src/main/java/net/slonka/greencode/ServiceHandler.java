@@ -1,14 +1,12 @@
 package net.slonka.greencode;
 
 import com.alibaba.fastjson2.JSON;
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.*;
-import io.netty.util.CharsetUtil;
 import io.netty.util.ReferenceCountUtil;
 import net.slonka.greencode.atmservice.domain.ATM;
 import net.slonka.greencode.atmservice.domain.Task;
@@ -48,9 +46,9 @@ public class ServiceHandler extends ChannelInboundHandlerAdapter {
     protected void process(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
         String uri = request.uri();
         HttpMethod method = request.method();
-        FullHttpResponse response = null;
+        FullHttpResponse response;
 
-        if ("/atms/calculateOrder".equalsIgnoreCase(uri) && method == HttpMethod.POST) {
+        if ("/atms/calculateOrder".equals(uri) && method == HttpMethod.POST) {
             var tasks = JSON.parseObject(request.content().toString(StandardCharsets.UTF_8), Task[].class);
             List<ATM> orders = ConvoyOrderSystem.calculateOrder(tasks);
             var responseJson = JSON.toJSONString(orders);
