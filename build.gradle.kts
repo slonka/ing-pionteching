@@ -1,7 +1,7 @@
 plugins {
     application
     id("java")
-    id("com.github.jk1.dependency-license-report") version "2.0"
+    id("com.github.jk1.dependency-license-report") version "2.4"
 }
 
 group = "net.slonka.greencode"
